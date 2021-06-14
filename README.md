@@ -34,7 +34,7 @@ A robot to detect when Daphne (my year old husky mix) is on the counter that use
 
 6. [2 x Basic PIR sensor](https://www.adafruit.com/product/4667). We'll use these to tell when there is motion in the periphery of view and rotate daph-bot toward the action.
 
-7. [2 x UBEC DC to DC stepdown](https://www.adafruit.com/product/1385). We'll use separate stepdowns for the PI and the motors
+7. [2 x UBEC DC to DC stepdown](https://www.adafruit.com/product/1385). We'll use separate stepdowns voltage regulators for the PI and the motors that will allow you to use a variety of battery or power supply options.
 
 8. [A robot frame with 2 DC motors](https://www.adafruit.com/product/2939). I used one like this that I got from IDK where, but the base was bigger than I wanted so I 3D printed my own.
 
@@ -46,11 +46,12 @@ A robot to detect when Daphne (my year old husky mix) is on the counter that use
 
 ## Things you'll need to do
 
-1. [Setup the PI for headless use and install things](https://learn.adafruit.com/adafruit-braincraft-hat-easy-machine-learning-for-raspberry-pi/raspberry-pi-setup). Continue to the next page from there to setup Blinka, Audio, Fan, Display Module, Camera,
+1. [Setup the PI for headless use and install things](https://learn.adafruit.com/adafruit-braincraft-hat-easy-machine-learning-for-raspberry-pi/raspberry-pi-setup). Continue to the next pages from there to setup Blinka, Audio, Fan, Display Module, Camera,
 
-2. [Setup Tensorflow Lite on the PI](https://learn.adafruit.com/running-tensorflow-lite-on-the-raspberry-pi-4) Follow on with the next pages from there to setup Tensor flow. When finished you should be able to run the following commands from the pi home directory
+2. [Setup Tensorflow Lite on the PI](https://learn.adafruit.com/running-tensorflow-lite-on-the-raspberry-pi-4) Follow on with the next pages from there to setup Tensor flow and test that it works. When finished you should be able to run the following commands from the pi home directory
 
 ```
+cd /home/pi
 sudo bash
 cd rpi-vision && . .venv/bin/activate
 python3 tests/pitft_labeled_output.py --tflite
@@ -75,14 +76,13 @@ sudo apt-get install mpg123
 
 4. Init ssh key and create data and logs directories
 
-Copying your SSH public key to the PI user's authorized_keys files.
+Copying your SSH public key to the PI user's authorized_keys files will make updating your code on the pi easier.
 
 See scripts/init.sh for example meant to be run from Mac terminal. If you edit `HOSTNAME` to match your `user@raspberry.local`, you should be able to use the script.
 
-If you didn't use the script above, don't forget to create the data directory. For example, on the PI in the pi user home directory,
+If you didn't use the script above, don't forget to create the logs directory. For example, on the PI in the pi user home directory,
 
 ```
-mkdir -p data
 mkdir -p logs
 ```
 
@@ -90,17 +90,18 @@ mkdir -p logs
 
 From your computer, copy the following directories with files to the PI user's home directory. See, for example, `scripts/upload.sh`
 
-Be sure to copy the following directories:
+Be sure to copy all of the following directories:
 
 - data/
 - lib/
 - media/
 - scripts/
 
-When you log into your PI as pi@yourraspberry.local you should see these directories using the ls command
+When you log into your PI as pi@yourraspberry.local you should see these directories using the `ls` command. It should look like:
 
 ```
-ls
+pi@trainerbot:~ $ ls
+data  lib  logs  media  Raspberry-Pi-Installer-Scripts  raspi-blinka.py  rpi-vision  scripts  seeed-voicecard
 ```
 
 ## But how does it work??
@@ -118,7 +119,7 @@ INFO:root:TFLite inference took 100 ms, 9.9 FPS
 INFO:root:[('n03207941', 'dishwasher', 0.17871304), ('n03761084', 'microwave', 0.16713606), ('n04590129', 'window_shade', 0.10856207), ('n04404412', 'television', 0.03231336), ('n03201208', 'dining_table', 0.024060488)]
 ```
 
-It is controlling the camera and the LCD display, passing about 10fps of image to Tensor Flow and writting a stream of log information to `stderr`. Instead of digging into how to create machine learning models or how that program works or is maintained, let's just treat it like a black box and pipe it's output to another program....
+It is controlling the camera and the LCD display, passing about 10fps of image to Tensor Flow and writing a stream of log information to `stderr`. Instead of digging into how to create machine learning models or how that program works or is maintained, let's just treat it like a black box and pipe it's output to another program....
 
 ### lib/uniqueThings.py
 
@@ -162,8 +163,9 @@ sudo nano /etc/rc.local
 2. Add the following to rc.local. Just before the `exit 0` add
 
 ```
-# send stdout and stderr from rc.local to a log file
-exec 1>/home/pi/data/rc.local.log 2>&1
+# send stdout and stderr from rc.local to a log file so you
+# can see the error message if startup fails
+exec 1>/home/pi/logs/rc.local.log 2>&1
 set -x
 
 cd /home/pi && /home/pi/scripts/run.sh

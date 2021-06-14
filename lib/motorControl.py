@@ -79,7 +79,7 @@ while True:
 
     if sensor1.value == sensor2.value:
         stopMoving()
-
+        # really if both are high
         if sensor1.value:
             # give IR sensors time to reset
             time.sleep(4)
