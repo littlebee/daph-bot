@@ -124,8 +124,6 @@ It is controlling the camera and the LCD display, passing about 10fps of image t
 
 This should probably be called parse things. It parses the output from pitft_labeled_output.py
 
-After a few seconds without any sightings, it removes data/ALERT.txt.
-
 uniqueThings.py also keeps a log of unique things seen and their counts (logs/uniqueThings.txt) so you can generate your own data/daphneThings.txt. You can just point daph-bot's camera at your furry friend and then edit the logs/uniqueThings.txt file to remove any lines that are obviously not.
 
 uniqueThings.py writes each thing it sees, whether it has seen it or not, to it's `stdout`.
@@ -135,6 +133,8 @@ uniqueThings.py writes each thing it sees, whether it has seen it or not, to it'
 This python program takes the stream of things from uniqueThings.py one per line looks for any sightings of Daphne things (data/daphneThings.txt) in the stream of image recognition data.
 
 When it gets a match on a Daphne thing, it creates file (data/ALERT.txt) to signal motor control and anyone (you) debugging that it has an sighting and logs the sighting to logs/daphneSightings.txt for debugging.
+
+After a few seconds without any sightings, it removes data/ALERT.txt.
 
 ### lib/motorControl.py
 
