@@ -1,3 +1,20 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [daph-bot](#daph-bot)
+  - [Things you'll need to buy or find](#things-youll-need-to-buy-or-find)
+  - [Things you'll need to do](#things-youll-need-to-do)
+  - [But how does it work??](#but-how-does-it-work)
+    - [rpi-vision/tests/pitft_labeled_output.py --tflite](#rpi-visiontestspitft_labeled_outputpy---tflite)
+    - [lib/uniqueThings.py](#libuniquethingspy)
+    - [lib/watcher.ph](#libwatcherph)
+    - [lib/motorControl.py](#libmotorcontrolpy)
+  - [More things to do](#more-things-to-do)
+    - [Start daph-bot when the PI reboots](#start-daph-bot-when-the-pi-reboots)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # daph-bot
 
 A robot to detect when Daphne (my year old husky mix) is on the counter that uses image recognition via Tensor Flow Lite.
@@ -85,6 +102,50 @@ When you log into your PI as pi@yourraspberry.local you should see these directo
 ls
 ```
 
+## But how does it work??
+
+There are 4 semi independent python programs running that make daph-bot work. (The paths are from the /home/pi directory on the raspberry)
+
+### rpi-vision/tests/pitft_labeled_output.py --tflite
+
+This was installed as part of setting up Tensor Flow Lite. See, Things You'll Need To Do, above.
+
+It's output looks like,
+
+```
+INFO:root:TFLite inference took 100 ms, 9.9 FPS
+INFO:root:[('n03207941', 'dishwasher', 0.17871304), ('n03761084', 'microwave', 0.16713606), ('n04590129', 'window_shade', 0.10856207), ('n04404412', 'television', 0.03231336), ('n03201208', 'dining_table', 0.024060488)]
+```
+
+It is controlling the camera and the LCD display, passing about 10fps of image to Tensor Flow and writting a stream of log information to `stderr`. Instead of digging into how to create machine learning models or how that program works or is maintained, let's just treat it like a black box and pipe it's output to another program....
+
+### lib/uniqueThings.py
+
+This should probably be called parse things. It parses the output from pitft_labeled_output.py
+
+After a few seconds without any sightings, it removes data/ALERT.txt.
+
+uniqueThings.py also keeps a log of unique things seen and their counts (logs/uniqueThings.txt) so you can generate your own data/daphneThings.txt. You can just point daph-bot's camera at your furry friend and then edit the logs/uniqueThings.txt file to remove any lines that are obviously not.
+
+uniqueThings.py writes each thing it sees, whether it has seen it or not, to it's `stdout`.
+
+### lib/watcher.ph
+
+This python program takes the stream of things from uniqueThings.py one per line looks for any sightings of Daphne things (data/daphneThings.txt) in the stream of image recognition data.
+
+When it gets a match on a Daphne thing, it creates file (data/ALERT.txt) to signal motor control and anyone (you) debugging that it has an sighting and logs the sighting to logs/daphneSightings.txt for debugging.
+
+### lib/motorControl.py
+
+This program interfaces with the Raspberry GPIO to control the motors of daph-bot.
+
+It continuously checks for
+
+- when both PIR sensors on GPIO 12 (left) and GPIO 13 (right) are hot, then stop moving and let the pixie dust settle
+- when the left PIR sensor is hot and right is cold, then rotate left to bring the action into view
+- when the right PIR sensor is hot and left is cold, then rotate right to bring the action into view
+- when the data/ALERT.txt file created by watcher.py exists, then do a little quick forward / backward motion and light the center LED red
+
 ## More things to do
 
 ### Start daph-bot when the PI reboots
@@ -95,7 +156,7 @@ ls
 sudo nano /etc/rc.local
 ```
 
-2. Add the run script to rc.local. Just before the `exit 0` add
+2. Add the following to rc.local. Just before the `exit 0` add
 
 ```
 # send stdout and stderr from rc.local to a log file
