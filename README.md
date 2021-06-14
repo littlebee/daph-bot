@@ -1,6 +1,7 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+**Table of Contents** _generated with [DocToc](https://github.com/thlorenz/doctoc)_
 
 - [daph-bot](#daph-bot)
   - [Things you'll need to buy or find](#things-youll-need-to-buy-or-find)
@@ -137,7 +138,7 @@ When it gets a match on a Daphne thing, it creates file (data/ALERT.txt) to sign
 
 ### lib/motorControl.py
 
-This program interfaces with the Raspberry GPIO to control the motors of daph-bot.
+This program interfaces with the Raspberry GPIO to read the sensors, change LED colors and control the motors of daph-bot.
 
 It continuously checks for
 
@@ -145,6 +146,8 @@ It continuously checks for
 - when the left PIR sensor is hot and right is cold, then rotate left to bring the action into view
 - when the right PIR sensor is hot and left is cold, then rotate right to bring the action into view
 - when the data/ALERT.txt file created by watcher.py exists, then do a little quick forward / backward motion and light the center LED red
+
+The PIR sensors need to be mounted to your bot frame such that there is a little overlap in their field of view (FOV). The PIR sensor listed under Things You Need to Find above have a 120 degree field of view.
 
 ## More things to do
 
