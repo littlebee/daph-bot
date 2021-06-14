@@ -19,8 +19,8 @@ uniqueThings = {}
 regex = re.compile("\('[^']*', '([^']*)'")
 lastDump = time.time()  # seconds
 
-dataPath = os.path.dirname(os.path.abspath(__file__)) + '/../data/'
-outFilePath = dataPath + 'uniqueThings.txt'
+logPath = os.path.dirname(os.path.abspath(__file__)) + '/../logs/'
+outFilePath = logPath + 'uniqueThings.txt'
 
 # clear the output file
 f = open(outFilePath, "w")

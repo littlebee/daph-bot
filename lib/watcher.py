@@ -4,26 +4,33 @@ import os
 import sys
 import time
 
-dataPath = os.path.dirname(os.path.abspath(__file__)) + '/../data/'
+thisFilePath = os.path.dirname(os.path.abspath(__file__))
+dataPath = thisFilePath + '/../data/'
+mediaPath = thisFilePath + '/../media/'
+logPath = thisFilePath + '/../logs/'
+
 # watcher reads the list of things matched to daphne in this file
-DAPHNE_THINGS_FILE_PATH = dataPath + "daphneThings.txt"
+daphneThingsFilePath = dataPath + 'daphneThings.txt'
 # ...and writes out these two files
-ALERT_FILE_PATH = dataPath + "ALERT.txt"
-SIGHTINGS_FILE_PATH = dataPath + "daphneSightings.txt"
+alertFilePath = dataPath + 'ALERT.txt'
+# ...sound file paths
+offFilePath = mediaPath + 'off.mp3'
+goodGirlFilePath = mediaPath + 'goodgirl.mp3'
+# ...we log sightings to this file
+sightingsFilePath = logPath + "daphneSightings.txt"
+
+if os.path.exists(alertFilePath):
+    os.remove(alertFilePath)
 
 
 daphneThings = {}
 lastDump = time.time()  # seconds
-
-if os.path.exists(ALERT_FILE_PATH):
-    os.remove(ALERT_FILE_PATH)
-
 onAlert = False
 lastAlert = datetime.datetime.now()
 
 
 def loadDaphneThings():
-    daphneThingsFile = open(DAPHNE_THINGS_FILE_PATH)
+    daphneThingsFile = open(daphneThingsFilePath)
     while True:
         line = daphneThingsFile.readline()
         if not line:
@@ -35,7 +42,7 @@ def loadDaphneThings():
 
 
 def logDaphneSighting(thing):
-    sightingsFile = open(SIGHTINGS_FILE_PATH, "a")
+    sightingsFile = open(sightingsFilePath, "a")
     sightingsFile.write(
         "Daphne sighting at {}\n".format(lastAlert))
     sightingsFile.close()
@@ -45,8 +52,15 @@ def logDaphneSighting(thing):
 
 
 def handleAlert():
+    global onAlert
+    onAlert = True
+
     print('Daphne alert!')
-    f = open(ALERT_FILE_PATH, 'w')
+    logDaphneSighting(thing)
+
+    os.system('mpg123 ' + offFilePath)
+
+    f = open(alertFilePath, 'w')
     f.write('I spy, with my one cold electronic eye... Daphne!!')
     f.close()
 
@@ -59,9 +73,11 @@ def clearStaleAlert():
     timeSinceLastAlert = datetime.datetime.now() - lastAlert
     if onAlert and timeSinceLastAlert.total_seconds() > 5:
         onAlert = False
+        os.system('mpg123 ' + goodGirlFilePath)
+
         print('watching...')
         sys.stdout.flush()
-        os.remove(ALERT_FILE_PATH)
+        os.remove(alertFilePath)
 
 
 loadDaphneThings()
@@ -75,8 +91,6 @@ try:
         if testThing in daphneThings:
             lastAlert = datetime.datetime.now()
             if not onAlert:
-                onAlert = True
-                logDaphneSighting(thing)
                 handleAlert()
 
 
