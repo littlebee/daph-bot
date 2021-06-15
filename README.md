@@ -28,17 +28,17 @@ A robot to detect when Daphne (my year old husky mix) is on the counter that use
 
 3. [Adafruit Braincraft Hat](https://www.adafruit.com/product/4374). This little hat is packed with features we will make use.
 
-4. [Adafruit DC & Stepper Motor Hat](https://www.adafruit.com/product/2348). Any I2C DC motor driver will work.
+4. [Adafruit DC & Stepper Motor Hat](https://www.adafruit.com/product/2348). Any I2C DC motor driver will work. If you get a hat or bonnet style, get it without any headers if you can. The Adafruit one here is a kit that you need to (NOT) solder the PI headers on. The Braincraft hat above really doesn't allow for anything between it and the Raspberry PI because of the cpu fan, and you don't want to stack on top of it or no buttons, LEDs or display. That's okay though, we'll make the stepper motor hat into an infinitely more useful Stemma-QT I2C compatible device with just four solder points using a...
 
-5. [A little speaker](https://www.adafruit.com/product/3351). <- this one comes with a JST connector that will plug right into the Braincraft hat
+5. [Stemma QT 4 pin plug](https://www.adafruit.com/product/4209). We'll use this to get I2C, 3.3V and Gnd to the motor controller hat.
 
-6. [2 x Basic PIR sensor](https://www.adafruit.com/product/4667). We'll use these to tell when there is motion in the periphery of view and rotate daph-bot toward the action.
+6. [A little speaker](https://www.adafruit.com/product/3351). <- this one comes with a JST connector that will plug right into the Braincraft hat
 
-7. [2 x UBEC DC to DC stepdown](https://www.adafruit.com/product/1385). We'll use separate stepdowns voltage regulators for the PI and the motors that will allow you to use a variety of battery or power supply options.
+7. [2 x Basic PIR sensor](https://www.adafruit.com/product/4667). We'll use these to tell when there is motion in the periphery of view and rotate daph-bot toward the action.
 
-8. [A robot frame with 2 DC motors](https://www.adafruit.com/product/2939). I used one like this that I got from IDK where, but the base was bigger than I wanted so I 3D printed my own.
+8. [2 x UBEC DC to DC stepdown](https://www.adafruit.com/product/1385). We'll use two separate stepdown voltage regulators for the PI and the motors and will allow us to use a variety of single battery or power supply options.
 
-9. [Stemma QT 4 pin plug](https://www.adafruit.com/product/4209). We'll use this to get I2C, 3.3V and Gnd to the motor controller hat.
+9. [A robot frame with 2 DC motors](https://www.adafruit.com/product/2939). I used one like this that I got from IDK where, but the base was bigger than I wanted so I 3D printed my own.
 
 10. [Some Risers](https://www.adafruit.com/product/3299) to stack things up
 
