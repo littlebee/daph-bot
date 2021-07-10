@@ -46,9 +46,9 @@ A robot to detect when Daphne (my year old husky mix) is on the counter that use
 
 ## Things you'll need to do
 
-1. [Setup the PI for headless use and install things](https://learn.adafruit.com/adafruit-braincraft-hat-easy-machine-learning-for-raspberry-pi/raspberry-pi-setup). Continue to the next pages from there to setup Blinka, Audio, Fan, Display Module, Camera,
-
-2. [Setup Tensorflow Lite on the PI](https://learn.adafruit.com/running-tensorflow-lite-on-the-raspberry-pi-4) Follow on with the next pages from there to setup Tensor flow and test that it works. When finished you should be able to run the following commands from the pi home directory
+1. [Setup the PI for headless](https://learn.adafruit.com/raspberry-pi-zero-creation/text-file-editing)
+1. [Install all of the things](https://learn.adafruit.com/adafruit-braincraft-hat-easy-machine-learning-for-raspberry-pi/raspberry-pi-setup). Continue to the next pages from there to setup Blinka, Audio, Fan, Display Module, Camera,
+1. [Setup Tensorflow Lite on the PI](https://learn.adafruit.com/running-tensorflow-lite-on-the-raspberry-pi-4) Follow on with the next pages from there to setup Tensor flow and test that it works. When finished you should be able to run the following commands from the pi home directory
 
 ```
 cd /home/pi
